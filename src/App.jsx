@@ -224,7 +224,8 @@ function App() {
             const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             
             formattedData.push({
-              time: `${formattedDay} ${timeStr}`,
+              time: `${formattedDay}|${timeStr}`,
+              tooltipTime: `${formattedDay} - ${timeStr}`,
               level: levelInM
             });
           }
