@@ -21,7 +21,7 @@ function App() {
 
   const fetchRealData = useCallback(async () => {
     try {
-      const OWM_KEY = '44e1a3ec6775eaf99482bd91feaf2f47';
+      const OWM_KEY = import.meta.env.VITE_OWM_KEY;
       let usingOWM = false;
 
       // Intentar obtener datos de OpenWeatherMap primero
@@ -157,7 +157,7 @@ function App() {
       }
 
       // Fetch Astronomical Tide Data (Stormglass con Caché para evitar límite de 10 peticiones)
-      const STORMGLASS_KEY = 'ef602380-5c76-11f1-b37b-0242ac120004-ef6023e4-5c76-11f1-b37b-0242ac120004';
+      const STORMGLASS_KEY = import.meta.env.VITE_STORMGLASS_KEY;
       const CACHE_KEY = 'tideCache';
       const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 horas
 
