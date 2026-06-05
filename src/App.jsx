@@ -204,9 +204,18 @@ function App() {
             }
           }
 
-          for (let i = startIndex; i < Math.min(startIndex + 48, tideJson.data.length); i++) {
+          const endOfTomorrow = new Date();
+          endOfTomorrow.setDate(endOfTomorrow.getDate() + 1);
+          endOfTomorrow.setHours(23, 59, 59, 999);
+
+          for (let i = startIndex; i < tideJson.data.length; i++) {
             const item = tideJson.data[i];
             const date = new Date(item.time);
+            
+            if (date > endOfTomorrow) {
+              break;
+            }
+
             // Mantener metros (m)
             const levelInM = item.sg !== undefined ? Number(item.sg.toFixed(2)) : 0;
             
