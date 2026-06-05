@@ -15,6 +15,7 @@ function App() {
   const [weatherData, setWeatherData] = useState({ temperature: 0, humidity: 0 });
   const [extraData, setExtraData] = useState({ pressure: 0, visibility: 0, uvIndex: 0, feelsLike: 0 });
   const [forecastData, setForecastData] = useState([]);
+  const [tideUpdateDate, setTideUpdateDate] = useState('');
   const [countdown, setCountdown] = useState(30);
   const [loading, setLoading] = useState(true);
   const [dataSource, setDataSource] = useState('Cargando...');
@@ -163,12 +164,14 @@ function App() {
 
       try {
         let tideJson = null;
+        let updateTimestamp = Date.now();
         const cachedData = localStorage.getItem(CACHE_KEY);
         
         if (cachedData) {
           const parsedCache = JSON.parse(cachedData);
           if (Date.now() - parsedCache.timestamp < CACHE_DURATION) {
             tideJson = parsedCache.data;
+            updateTimestamp = parsedCache.timestamp;
           }
         }
 
@@ -179,14 +182,17 @@ function App() {
           );
           tideJson = await tideRes.json();
           if (tideJson.data) {
+            updateTimestamp = Date.now();
             localStorage.setItem(CACHE_KEY, JSON.stringify({
-              timestamp: Date.now(),
+              timestamp: updateTimestamp,
               data: tideJson
             }));
           }
         }
 
         if (tideJson && tideJson.data) {
+          setTideUpdateDate(new Date(updateTimestamp).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' }));
+          
           const now = new Date();
           const formattedData = [];
           
@@ -278,6 +284,11 @@ function App() {
         </DashboardCard>
 
         <DashboardCard title="Marea Astronómica" icon={Waves} className="card-tide">
+          {tideUpdateDate && (
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '8px', marginTop: '-8px' }}>
+              Actualizado por última vez: {tideUpdateDate}
+            </div>
+          )}
           <TideChart data={tideData} />
         </DashboardCard>
 
