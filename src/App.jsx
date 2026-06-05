@@ -289,7 +289,7 @@ function App() {
       </header>
 
       <main className="dashboard-grid">
-        <DashboardCard title="Viento" icon={Wind} className="card-wind">
+        <DashboardCard title="Viento" icon={Wind} legend="Velocidad y dirección" className="card-wind">
           <WindCompass 
             speed={windData.speed} 
             direction={windData.direction} 
@@ -300,55 +300,56 @@ function App() {
         <DashboardCard 
           title="Marea Astronómica" 
           icon={Waves} 
+          legend="Nivel del mar (MLLW)"
           className="card-tide"
           rightText={tideUpdateDate ? `Actualizado: ${tideUpdateDate}` : null}
         >
           <TideChart data={tideData} />
         </DashboardCard>
 
-        <DashboardCard title="Temperatura" icon={Thermometer} className="card-small">
+        <DashboardCard title="Temperatura" icon={Thermometer} legend="Al aire libre" className="card-small">
           <div className="metric-simple">
             <span className="metric-value">{weatherData.temperature}</span>
             <span className="metric-unit">°C</span>
           </div>
         </DashboardCard>
 
-        <DashboardCard title="Humedad" icon={Droplets} className="card-small">
+        <DashboardCard title="Humedad" icon={Droplets} legend="Relativa actual" className="card-small">
           <div className="metric-simple">
             <span className="metric-value">{weatherData.humidity}</span>
             <span className="metric-unit">%</span>
           </div>
         </DashboardCard>
 
-        <DashboardCard title="Sensación Térm." icon={Thermometer} className="card-small">
+        <DashboardCard title="Sensación Térm." icon={Thermometer} legend="Percibida en piel" className="card-small">
           <div className="metric-simple">
             <span className="metric-value">{extraData.feelsLike}</span>
             <span className="metric-unit">°C</span>
           </div>
         </DashboardCard>
 
-        <DashboardCard title="Presión" icon={Gauge} className="card-small">
+        <DashboardCard title="Presión" icon={Gauge} legend="A nivel del mar" className="card-small">
           <div className="metric-simple">
             <span className="metric-value">{extraData.pressure}</span>
             <span className="metric-unit">hPa</span>
           </div>
         </DashboardCard>
 
-        <DashboardCard title="Índice UV" icon={SunMedium} className="card-small">
+        <DashboardCard title="Índice UV" icon={SunMedium} legend="Radiación solar" className="card-small">
           <div className="metric-simple">
             <span className="metric-value">{extraData.uvIndex}</span>
             <span className="metric-unit"></span>
           </div>
         </DashboardCard>
 
-        <DashboardCard title="Visibilidad" icon={Eye} className="card-small">
+        <DashboardCard title="Visibilidad" icon={Eye} legend="Distancia clara" className="card-small">
           <div className="metric-simple">
             <span className="metric-value">{extraData.visibility}</span>
             <span className="metric-unit">km</span>
           </div>
         </DashboardCard>
 
-        <DashboardCard title="Pronóstico (12 horas)" icon={CalendarDays} className="card-forecast">
+        <DashboardCard title="Pronóstico (12 horas)" icon={CalendarDays} legend="Condiciones esperadas" className="card-forecast">
           <WeatherForecast forecast={forecastData} />
         </DashboardCard>
       </main>
