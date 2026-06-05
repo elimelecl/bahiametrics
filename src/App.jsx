@@ -210,8 +210,13 @@ function App() {
             // Mantener metros (m)
             const levelInM = item.sg !== undefined ? Number(item.sg.toFixed(2)) : 0;
             
+            const dayStr = date.toLocaleDateString('es-ES', { weekday: 'short', day: '2-digit', month: '2-digit' });
+            const formattedDay = dayStr.charAt(0).toUpperCase() + dayStr.slice(1).replace(',', '');
+            const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
             formattedData.push({
-              time: date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              time: `${formattedDay}|${timeStr}`,
+              tooltipTime: `${formattedDay} - ${timeStr}`,
               level: levelInM
             });
           }

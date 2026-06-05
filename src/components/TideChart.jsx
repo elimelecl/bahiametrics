@@ -3,14 +3,27 @@ import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceL
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
+    const dataObj = payload[0].payload;
     return (
       <div className="custom-tooltip">
-        <p className="tooltip-time">{label}</p>
+        <p className="tooltip-time">{dataObj.tooltipTime || label.replace('|', ' ')}</p>
         <p className="tooltip-value">{`${payload[0].value} m`}</p>
       </div>
     );
   }
   return null;
+};
+
+const CustomizedAxisTick = ({ x, y, payload }) => {
+  const parts = payload.value.split('|');
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <text x={0} y={0} dy={16} textAnchor="middle" fill="rgba(255,255,255,0.7)" fontSize={12}>
+        <tspan textAnchor="middle" x="0">{parts[1] || parts[0]}</tspan>
+        {parts[1] && <tspan textAnchor="middle" x="0" dy="14" fill="rgba(255,255,255,0.5)" fontSize={10}>{parts[0]}</tspan>}
+      </text>
+    </g>
+  );
 };
 
 const TideChart = ({ data }) => {
@@ -38,8 +51,9 @@ const TideChart = ({ data }) => {
             dataKey="time" 
             axisLine={false} 
             tickLine={false} 
-            tick={{ fill: 'rgba(255,255,255,0.7)', fontSize: 12 }} 
+            tick={<CustomizedAxisTick />} 
             dy={10}
+            minTickGap={20}
           />
           <YAxis 
             domain={['dataMin - 0.1', 'dataMax + 0.1']}
