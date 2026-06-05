@@ -1,6 +1,6 @@
 import React from 'react';
 
-const DashboardCard = ({ title, icon: Icon, children, className = "" }) => {
+const DashboardCard = ({ title, icon: Icon, rightText, children, className = "" }) => {
   return (
     <div className={`dashboard-card ${className}`}>
       <div className="card-header">
@@ -8,6 +8,11 @@ const DashboardCard = ({ title, icon: Icon, children, className = "" }) => {
           {Icon && <Icon className="card-icon" />}
           <h2 className="card-title">{title}</h2>
         </div>
+        {rightText && (
+          <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textAlign: 'right' }}>
+            {rightText}
+          </div>
+        )}
       </div>
       <div className="card-content">
         {children}

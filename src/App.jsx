@@ -283,12 +283,12 @@ function App() {
           />
         </DashboardCard>
 
-        <DashboardCard title="Marea Astronómica" icon={Waves} className="card-tide">
-          {tideUpdateDate && (
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '8px', marginTop: '-8px' }}>
-              Actualizado por última vez: {tideUpdateDate}
-            </div>
-          )}
+        <DashboardCard 
+          title="Marea Astronómica" 
+          icon={Waves} 
+          className="card-tide"
+          rightText={tideUpdateDate ? `Actualizado: ${tideUpdateDate}` : null}
+        >
           <TideChart data={tideData} />
         </DashboardCard>
 
