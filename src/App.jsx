@@ -204,7 +204,7 @@ function App() {
             }
           }
 
-          for (let i = startIndex; i < Math.min(startIndex + 36, tideJson.data.length); i++) {
+          for (let i = startIndex; i < Math.min(startIndex + 48, tideJson.data.length); i++) {
             const item = tideJson.data[i];
             const date = new Date(item.time);
             // Mantener metros (m)
@@ -215,8 +215,7 @@ function App() {
             const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             
             formattedData.push({
-              time: `${formattedDay}|${timeStr}`,
-              tooltipTime: `${formattedDay} - ${timeStr}`,
+              time: `${formattedDay} ${timeStr}`,
               level: levelInM
             });
           }
