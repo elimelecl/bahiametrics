@@ -72,7 +72,7 @@ const TideChart = ({ data }) => {
             strokeWidth={3}
             fillOpacity={1} 
             fill="url(#colorTide)" 
-            animationDuration={1500}
+            isAnimationActive={false}
             activeDot={{ r: 6, fill: '#ffffff', stroke: 'rgba(255,255,255,0.5)', strokeWidth: 4 }}
           />
         </AreaChart>

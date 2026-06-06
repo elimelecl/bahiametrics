@@ -16,7 +16,7 @@ function App() {
   const [extraData, setExtraData] = useState({ pressure: 0, visibility: 0, uvIndex: 0, feelsLike: 0 });
   const [forecastData, setForecastData] = useState([]);
   const [tideUpdateDate, setTideUpdateDate] = useState('');
-  const [countdown, setCountdown] = useState(30);
+  const [countdown, setCountdown] = useState(300); // 5 minutos
   const [loading, setLoading] = useState(true);
   const [dataSource, setDataSource] = useState('Cargando...');
 
@@ -239,7 +239,7 @@ function App() {
       console.error("Error fetching data:", error);
     } finally {
       setLoading(false);
-      setCountdown(30);
+      setCountdown(300); // 5 minutos
     }
   }, []);
 
