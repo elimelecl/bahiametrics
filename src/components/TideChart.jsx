@@ -53,7 +53,8 @@ const TideChart = ({ data }) => {
             tickLine={false} 
             tick={<CustomizedAxisTick />} 
             dy={10}
-            minTickGap={10}
+            minTickGap={-10}
+            interval={2}
           />
           <YAxis 
             domain={['dataMin - 0.1', 'dataMax + 0.1']}

@@ -91,7 +91,7 @@ function App() {
             const forecast = owmForecastJson.list.slice(0, 4).map(item => {
               const date = new Date(item.dt * 1000);
               return {
-                time: date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                time: date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
                 weather_code: getWmoCode(item.weather[0].id),
                 temp: item.main.temp,
                 prob: Math.round(item.pop * 100)
@@ -147,7 +147,7 @@ function App() {
           for (let i = startIndex; i < Math.min(startIndex + 12, hourly.time.length); i++) {
             const date = new Date(hourly.time[i]);
             forecast.push({
-              time: date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              time: date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
               weather_code: hourly.weather_code[i],
               temp: hourly.temperature_2m[i],
               prob: hourly.precipitation_probability[i]
@@ -221,7 +221,7 @@ function App() {
             
             const dayStr = date.toLocaleDateString('es-ES', { weekday: 'short', day: '2-digit', month: '2-digit' });
             const formattedDay = dayStr.charAt(0).toUpperCase() + dayStr.slice(1).replace(',', '');
-            const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
             
             formattedData.push({
               time: `${formattedDay}|${timeStr}`,
