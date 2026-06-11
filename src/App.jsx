@@ -13,6 +13,35 @@ import './index.css';
 const LAT = 10.287433;
 const LON = -75.539158;
 
+const StatusBadge = ({ loading, onZero }) => {
+  const [countdown, setCountdown] = useState(300);
+
+  useEffect(() => {
+    if (loading) {
+      setCountdown(300);
+      return;
+    }
+    const interval = setInterval(() => {
+      setCountdown((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [loading]);
+
+  useEffect(() => {
+    if (countdown === 0 && !loading) {
+      onZero();
+      setCountdown(300);
+    }
+  }, [countdown, loading, onZero]);
+
+  return (
+    <div className="status-badge">
+      <Clock size={16} />
+      <span>{loading ? "Cargando..." : `Actualización en: ${countdown}s`}</span>
+    </div>
+  );
+};
+
 function App() {
   const [tideData, setTideData] = useState([]);
   const [windData, setWindData] = useState({ speed: 0, gusts: 0, direction: 0 });
@@ -20,7 +49,6 @@ function App() {
   const [extraData, setExtraData] = useState({ pressure: 0, visibility: 0, uvIndex: 0, feelsLike: 0 });
   const [forecastData, setForecastData] = useState([]);
   const [tideUpdateDate, setTideUpdateDate] = useState('');
-  const [countdown, setCountdown] = useState(300); // 5 minutos
   const [loading, setLoading] = useState(true);
   const [dataSource, setDataSource] = useState('Cargando...');
 
@@ -246,7 +274,6 @@ function App() {
       console.error("Error fetching data:", error);
     } finally {
       setLoading(false);
-      setCountdown(300); // 5 minutos
     }
   }, []);
 
@@ -265,21 +292,6 @@ function App() {
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, [fetchRealData]);
 
-  useEffect(() => {
-    // Cuenta regresiva cada segundo
-    const interval = setInterval(() => {
-      setCountdown((prev) => (prev > 0 ? prev - 1 : 0));
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    // Cuando la cuenta regresiva llega a 0, actualizar datos
-    if (countdown === 0 && !loading) {
-      fetchRealData();
-    }
-  }, [countdown, fetchRealData, loading]);
-
   return (
     <div className="app-container">
       <div className="background-glow"></div>
@@ -289,10 +301,7 @@ function App() {
           <h1 className="main-title">Bahía Metrics</h1>
           <p className="subtitle">Condiciones en tiempo real (Cartagena) • Fuente: <strong>{dataSource}</strong></p>
         </div>
-        <div className="status-badge">
-          <Clock size={16} />
-          <span>{loading ? "Cargando..." : `Actualización en: ${countdown}s`}</span>
-        </div>
+        <StatusBadge loading={loading} onZero={fetchRealData} />
       </header>
 
       <main className="dashboard-grid">
