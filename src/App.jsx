@@ -6,6 +6,10 @@ import WeatherForecast from './components/WeatherForecast';
 import { Waves, Wind, Thermometer, Droplets, Clock, CalendarDays, Eye, Gauge, SunMedium, Anchor } from 'lucide-react';
 import './index.css';
 
+/**
+ https://api.openweathermap.org/data/2.5/weather?lat=10.287433&lon=-75.539158&appid=44e1a3ec6775eaf99482bd91feaf2f47&units=metric
+ **/
+
 const LAT = 10.287433;
 const LON = -75.539158;
 
@@ -35,9 +39,9 @@ function App() {
           setDataSource('OpenWeatherMap');
           // Conversión de m/s a nudos (kt)
           const mpsToKt = (mps) => Number((mps * 1.94384).toFixed(1));
-          
+
           let finalGusts = owmJson.wind.gust ? mpsToKt(owmJson.wind.gust) : null;
-          
+
           // Siempre extraemos UV Index de Open-Meteo, y usamos gusts si faltan en OWM
           let uvIndexVal = 0;
           try {
@@ -55,9 +59,10 @@ function App() {
             if (finalGusts === null) finalGusts = 0;
           }
 
+          const speedKt = mpsToKt(owmJson.wind.speed);
           setWindData({
-            speed: mpsToKt(owmJson.wind.speed),
-            gusts: finalGusts,
+            speed: speedKt,
+            gusts: Math.max(finalGusts, speedKt),
             direction: owmJson.wind.deg
           });
           setWeatherData({
@@ -75,7 +80,7 @@ function App() {
           // Fetch OWM Forecast (cada 3 horas)
           const owmForecastRes = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${LAT}&lon=${LON}&appid=${OWM_KEY}&units=metric`);
           const owmForecastJson = await owmForecastRes.json();
-          
+
           if (owmForecastRes.ok && owmForecastJson.list) {
             const getWmoCode = (owmId) => {
               if (owmId >= 200 && owmId < 300) return 95; // storm
@@ -115,9 +120,11 @@ function App() {
         const weatherJson = await weatherRes.json();
 
         if (weatherJson.current) {
+          const omSpeed = weatherJson.current.wind_speed_10m;
+          const omGusts = weatherJson.current.wind_gusts_10m;
           setWindData({
-            speed: weatherJson.current.wind_speed_10m,
-            gusts: weatherJson.current.wind_gusts_10m,
+            speed: omSpeed,
+            gusts: Math.max(omGusts, omSpeed),
             direction: weatherJson.current.wind_direction_10m
           });
           setWeatherData({
@@ -166,7 +173,7 @@ function App() {
         let tideJson = null;
         let updateTimestamp = Date.now();
         const cachedData = localStorage.getItem(CACHE_KEY);
-        
+
         if (cachedData) {
           const parsedCache = JSON.parse(cachedData);
           if (Date.now() - parsedCache.timestamp < CACHE_DURATION) {
@@ -192,10 +199,10 @@ function App() {
 
         if (tideJson && tideJson.data) {
           setTideUpdateDate(new Date(updateTimestamp).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' }));
-          
+
           const now = new Date();
           const formattedData = [];
-          
+
           let startIndex = 0;
           for (let i = 0; i < tideJson.data.length; i++) {
             if (new Date(tideJson.data[i].time) >= now) {
@@ -211,25 +218,25 @@ function App() {
           for (let i = startIndex; i < tideJson.data.length; i++) {
             const item = tideJson.data[i];
             const date = new Date(item.time);
-            
+
             if (date > endOfTomorrow) {
               break;
             }
 
             // Mantener metros (m)
             const levelInM = item.sg !== undefined ? Number(item.sg.toFixed(2)) : 0;
-            
+
             const dayStr = date.toLocaleDateString('es-ES', { weekday: 'short', day: '2-digit', month: '2-digit' });
             const formattedDay = dayStr.charAt(0).toUpperCase() + dayStr.slice(1).replace(',', '');
             const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-            
+
             formattedData.push({
               time: `${formattedDay}|${timeStr}`,
               tooltipTime: `${formattedDay} - ${timeStr}`,
               level: levelInM
             });
           }
-          
+
           setTideData(formattedData);
         }
       } catch (err) {
@@ -276,7 +283,7 @@ function App() {
   return (
     <div className="app-container">
       <div className="background-glow"></div>
-      
+
       <header className="app-header">
         <div>
           <h1 className="main-title">Bahía Metrics</h1>
@@ -290,16 +297,16 @@ function App() {
 
       <main className="dashboard-grid">
         <DashboardCard title="Viento" icon={Wind} legend="Velocidad y dirección" className="card-wind">
-          <WindCompass 
-            speed={windData.speed} 
-            direction={windData.direction} 
-            gusts={windData.gusts} 
+          <WindCompass
+            speed={windData.speed}
+            direction={windData.direction}
+            gusts={windData.gusts}
           />
         </DashboardCard>
 
-        <DashboardCard 
-          title="Marea Astronómica" 
-          icon={Waves} 
+        <DashboardCard
+          title="Marea Astronómica"
+          icon={Waves}
           legend="Nivel del mar (MLLW)"
           className="card-tide"
           rightText={tideUpdateDate ? `Actualizado: ${tideUpdateDate}` : null}
